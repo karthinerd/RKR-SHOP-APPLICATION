@@ -7,7 +7,7 @@ export default function EditProduct() {
 
   const { id } = useParams();
 
-  const [user, setUser] = useState({
+  const [product, setProduct] = useState({
     productName: "",
     productDescription: "",
     availableQuantity: "",
@@ -21,11 +21,13 @@ export default function EditProduct() {
     availableQuantity,
     productImage,
     pointsRequired,
-  } = user;
+  } = product;
 
   const onInputChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
+    setProduct({ ...product, [e.target.name]: e.target.value });
   };
+
+  const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
     loadUser();
@@ -34,13 +36,35 @@ export default function EditProduct() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    await axios.put(`http://localhost:8003/updateProduct/${id}`, user);
+    setFormErrors(validate(product));
+    await axios.put(`http://localhost:8003/updateProduct/${id}`,product);
     navigate("/productList");
   };
 
   const loadUser = async () => {
     const result = await axios.get(`http://localhost:8003/getProduct/${id}`);
-    setUser(result.data);
+    setProduct(result.data);
+  };
+
+  const validate = (values) => {
+    const errors = {};
+    if (!values.productName) {
+      errors.productName = "Product is Mandatory";
+    } else if (values.productName.length < 4) {
+      errors.productName = "Product Name Must be More Than 4 Characters";
+    }
+    if (!values.availableQuantity) {
+      errors.availableQuantity = "Quantity is Mandatory";
+    } else if (values.availableQuantity <= 0) {
+      errors.availableQuantity = "Quantity Must be More Than 0";
+    }
+
+    if (!values.pointsRequired) {
+      errors.pointsRequired = "point is Mandatory";
+    } else if (values.pointsRequired <= 0) {
+      errors.pointsRequired = "Points Must be More Than 0";
+    }
+    return errors;
   };
 
   return (
@@ -61,9 +85,11 @@ export default function EditProduct() {
                 name="productName"
                 value={productName}
                 onChange={(e) => onInputChange(e)}
-                required
+                
               />
             </div>
+            <p>{formErrors.productName}</p>
+
             <div className="mb-3">
               <label htmlFor="productDescription" className="form-label">
                 productDescription
@@ -79,7 +105,7 @@ export default function EditProduct() {
                 placeholder="Description Box"
                 value={productDescription}
                 onChange={(e) => onInputChange(e)}
-                required
+                
               ></textarea>
             </div>
             <div className="mb-3">
@@ -93,9 +119,10 @@ export default function EditProduct() {
                 name="availableQuantity"
                 value={availableQuantity}
                 onChange={(e) => onInputChange(e)}
-                required
+                
               />
             </div>
+            <p>{formErrors.availableQuantity}</p>
             
             <div class="mb-3">
               <label for="formFile" class="form-label">
@@ -111,6 +138,8 @@ export default function EditProduct() {
                 
               />
             </div>
+            
+
 
             <div className="mb-3">
               <label htmlFor="pointsRequired" className="form-label">
@@ -123,9 +152,10 @@ export default function EditProduct() {
                 name="pointsRequired"
                 value={pointsRequired}
                 onChange={(e) => onInputChange(e)}
-                required
+                
               />
             </div>
+            <p>{formErrors.pointsRequired}</p>
 
             <button type="submit" className="btn btn-outline-primary">
               Update Product

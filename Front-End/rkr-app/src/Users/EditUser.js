@@ -17,6 +17,8 @@ export default function EditUser() {
 
   const { userName, passWord, confirmPassword, emailId, phoneNumber } = user;
 
+  const [formErrors, setFormErrors] = useState({});
+
   const onInputChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
@@ -27,6 +29,8 @@ export default function EditUser() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setFormErrors(validate(user));
+
     await axios.put(`http://localhost:8001/user/${id}`, user);
     navigate("/");
   };
@@ -35,6 +39,47 @@ export default function EditUser() {
     const result = await axios.get(`http://localhost:8001/getUser/${id}`);
     setUser(result.data);
   };
+
+  const validate = (values) => {
+    const errors = {};
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+    if (!values.userName) {
+      errors.userName = "UserName is Mandatory!";
+    }else if (values.userName.length<4) {
+      errors.userName = "UserName must be more than 3 characters!";
+    }
+    if (!values.emailId) {
+      errors.emailId = "Email is required!";
+    } else if (!regex.test(values.emailId)) {
+      errors.emailId = "This is not a valid email format!";
+    }
+    if (!values.passWord) {
+      errors.passWord = "Password is required";
+    } else if (values.passWord.length < 8) {
+      errors.passWord = "Password must be more than 8 characters";
+    } else if (values.passWord.length > 10) {
+      errors.passWord = "Password cannot exceed more than 10 characters";
+    }
+    if (!values.confirmPassword) {
+      errors.confirmPassword = "Confirm Password is required";
+    } else if (values.confirmPassword.length < 8) {
+      errors.confirmPassword = "Password must be more than 8 characters";
+    } else if (values.confirmPassword.length > 10) {
+      errors.confirmPassword = "Password cannot exceed more than 10 characters";
+    }
+    if(values.passWord!==values.confirmPassword){
+      errors.confirmPassword="Password Doesn't Matched";
+    }
+    if (!values.phoneNumber) {
+      errors.phoneNumber = "Phone Number is Mandatory";
+    }else if (values.phoneNumber.length < 10) {
+      errors.phoneNumber = "PhoneNumber must be 10 Numbers";
+    } else if (values.phoneNumber.length > 10) {
+      errors.phoneNumber = "PhoneNumber cannot exceed more than 10 Numbers";
+    }
+    return errors;
+  };
+
 
   return (
     <div className="container">
@@ -54,23 +99,28 @@ export default function EditUser() {
                 name="userName"
                 value={userName}
                 onChange={(e) => onInputChange(e)}
-                required
+                
               />
             </div>
+            <p>{formErrors.userName}</p>
+
             <div className="mb-3">
               <label htmlFor="Email" className="form-label">
                 E-mail
               </label>
               <input
-                type={"email"}
+                type={"text"}
                 className="form-control"
                 placeholder="Enter your e-mail address"
                 name="emailId"
                 value={emailId}
                 onChange={(e) => onInputChange(e)}
-                required
+                
               />
               </div>
+              <p>{formErrors.emailId}</p>
+
+
               <div className="mb-3">
                 <label htmlFor="Password" className="form-label">
                   Password
@@ -82,9 +132,11 @@ export default function EditUser() {
                   name="passWord"
                   value={passWord}
                   onChange={(e) => onInputChange(e)}
-                  required
+                  
                 />
               </div>
+              <p>{formErrors.passWord}</p>
+
               <div className="mb-3">
                 <label htmlFor="ConfirmPassword" className="form-label">
                   ConfirmPassword
@@ -96,9 +148,13 @@ export default function EditUser() {
                   name="confirmPassword"
                   value={confirmPassword}
                   onChange={(e) => onInputChange(e)}
-                  required
+                  
                 />
               </div>
+              <p>{formErrors.confirmPassword}</p>
+            
+
+
               <div className="mb-3">
                 <label htmlFor="PhoneNumber" className="form-label">
                   PhoneNumber
@@ -110,9 +166,10 @@ export default function EditUser() {
                   name="phoneNumber"
                   value={phoneNumber}
                   onChange={(e) => onInputChange(e)}
-                  required
+                 
                 />
               </div>
+              <p>{formErrors.phoneNumber}</p>
               
             <button type="submit" className="btn btn-outline-primary">
               Submit

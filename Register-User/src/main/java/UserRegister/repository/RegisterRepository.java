@@ -6,6 +6,6 @@ import UserRegister.model.RegisterEntity;
 
 public interface RegisterRepository extends JpaRepository<RegisterEntity, Long>{
 
-	boolean existsByUserName(String userName);
+	RegisterEntity findByUserName (String userName);
 
 }

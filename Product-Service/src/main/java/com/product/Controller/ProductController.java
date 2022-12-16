@@ -17,6 +17,8 @@ import com.product.Entity.ProductEntity;
 import com.product.Repository.ProductRepository;
 import com.product.Service.ProductService;
 
+import jakarta.validation.Valid;
+
 
 
 @RestController
@@ -30,8 +32,12 @@ public class ProductController {
 	private ProductService service;
 
 	@PostMapping("/addProduct")
-	ProductEntity entity(@RequestBody ProductEntity entity) {
+	ProductEntity entity(@Valid @RequestBody ProductEntity entity) {
 
+		ProductEntity alreadyExist = productRepository.findByProductName(entity.getProductName());
+		
+		if(alreadyExist!=null)throw new RuntimeException("This Product Name Already Taken");
+		
 		return productRepository.save(entity);
 	}
 

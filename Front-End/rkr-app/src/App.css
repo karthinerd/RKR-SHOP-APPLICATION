@@ -29,3 +29,15 @@
   margin-top: 1%;
   margin-left: 90%;
 }
+
+.container > form {
+  width: 70%;
+  border: 1px solid #dfdfdf;
+  padding: 20px;
+  border-radius: 5px;
+  background: #fff;
+}
+
+p {
+  color: red;
+}

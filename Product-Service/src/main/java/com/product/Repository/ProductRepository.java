@@ -6,4 +6,5 @@ import com.product.Entity.ProductEntity;
 
 public interface ProductRepository extends JpaRepository<ProductEntity, Long>{
 
+	ProductEntity findByProductName(String productName);
 }

@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 export default function AddProduct() {
   let navigate = useNavigate();
 
-  const [user, setUser] = useState({
+  const [product, setProduct] = useState({
     productName: "",
     productDescription: "",
     availableQuantity: "",
@@ -19,17 +19,42 @@ export default function AddProduct() {
     availableQuantity,
     productImage,
     pointsRequired,
-  } = user;
+  } = product;
 
   const onInputChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
+    setProduct({ ...product, [e.target.name]: e.target.value });
   };
+
+  const [formErrors, setFormErrors] = useState({});
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    await axios.post("http://localhost:8003/addProduct", user);
+    setFormErrors(validate(product));
+    await axios.post("http://localhost:8003/addProduct", product);
     navigate("/productList");
   };
+
+  const validate = (values) => {
+    const errors = {};
+    if (!values.productName) {
+      errors.productName = "Product is Mandatory";
+    } else if (values.productName.length < 4) {
+      errors.productName = "Product Name Must be More Than 4 Characters";
+    }
+    if (!values.availableQuantity) {
+      errors.availableQuantity = "Quantity is Mandatory";
+    } else if (values.availableQuantity <= 0) {
+      errors.availableQuantity = "Quantity Must be More Than 0";
+    }
+
+    if (!values.pointsRequired) {
+      errors.pointsRequired = "point is Mandatory";
+    } else if (values.pointsRequired <= 0) {
+      errors.pointsRequired = "Points Must be More Than 0";
+    }
+    return errors;
+  };
+
 
   return (
     <div className="container">
@@ -48,9 +73,9 @@ export default function AddProduct() {
                 placeholder="Enter productName"
                 name="productName"
                 value={productName}
-                onChange={(e) => onInputChange(e)}
-                required
+                onChange={(e) => onInputChange(e)}               
               />
+              <p>{formErrors.productName}</p>
             </div>
             <div className="mb-3">
               <label htmlFor="productDescription" className="form-label">
@@ -67,7 +92,7 @@ export default function AddProduct() {
                 placeholder="Description Box"
                 value={productDescription}
                 onChange={(e) => onInputChange(e)}
-                required
+                
               ></textarea>
             </div>
             <div className="mb-3">
@@ -81,9 +106,10 @@ export default function AddProduct() {
                 name="availableQuantity"
                 value={availableQuantity}
                 onChange={(e) => onInputChange(e)}
-                required
+                
               />
             </div>
+            <p>{formErrors.availableQuantity}</p>
             
             <div class="mb-3">
               <label for="formFile" class="form-label">
@@ -111,9 +137,10 @@ export default function AddProduct() {
                 name="pointsRequired"
                 value={pointsRequired}
                 onChange={(e) => onInputChange(e)}
-                required
+                
               />
             </div>
+            <p>{formErrors.pointsRequired}</p>
 
             <button type="submit" className="btn btn-outline-primary">
               Add Product
