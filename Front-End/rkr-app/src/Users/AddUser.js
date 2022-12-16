@@ -40,14 +40,14 @@ export default function AddUser() {
     const errors = {};
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
     if (!values.userName) {
-      errors.userName = "UserName is Mandatory!";
+      errors.userName = "UserName is Mandatory";
     }else if (values.userName.length<4) {
-      errors.userName = "UserName must be more than 3 characters!";
+      errors.userName = "UserName must be more than 3 characters";
     }
     if (!values.emailId) {
-      errors.emailId = "Email is required!";
+      errors.emailId = "Email is required";
     } else if (!regex.test(values.emailId)) {
-      errors.emailId = "This is not a valid email format!";
+      errors.emailId = "This is not a valid email format";
     }
     if (!values.passWord) {
       errors.passWord = "Password is required";
