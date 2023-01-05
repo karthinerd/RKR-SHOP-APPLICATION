@@ -6,21 +6,21 @@ export default function AddUser() {
   let navigate = useNavigate();
 
   const [user, setUser] = useState({
-    userName: "",
-    passWord: "",
-    confirmPassword: "",
-    emailId: "",
+    username: "",
+    password: "",
+    email: "",
     phoneNumber: "",
-    roleName: "",
+    role: "",
+    points:""
   });
 
   const {
-    userName,
-    passWord,
-    confirmPassword,
-    emailId,
+    username,
+    password,
+    email,
     phoneNumber,
-    roleName,
+    role,
+    points
   } = user;
 
   const [formErrors, setFormErrors] = useState({});
@@ -32,42 +32,32 @@ export default function AddUser() {
   const onSubmit = async (e) => {
     e.preventDefault();
     setFormErrors(validate(user));
-    await axios.post("http://localhost:8001/register", user);
+    await axios.post("http://localhost:8001/api/auth/signup", user);
     navigate("/");
   };
 
   const validate = (values) => {
     const errors = {};
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-    if (!values.userName) {
-      errors.userName = "UserName is Mandatory";
-    }else if (values.userName.length<4) {
-      errors.userName = "UserName must be more than 3 characters";
+    if (!values.username) {
+      errors.username = "UserName is Mandatory";
+    }else if (values.username.length<4) {
+      errors.username = "UserName must be more than 3 characters";
     }
-    if (!values.emailId) {
-      errors.emailId = "Email is required";
-    } else if (!regex.test(values.emailId)) {
-      errors.emailId = "This is not a valid email format";
+    if (!values.email) {
+      errors.email = "Email is required";
+    } else if (!regex.test(values.email)) {
+      errors.email = "This is not a valid email format";
     }
-    if (!values.passWord) {
-      errors.passWord = "Password is required";
-    } else if (values.passWord.length < 8) {
-      errors.passWord = "Password must be more than 8 characters";
-    } else if (values.passWord.length > 10) {
+    if (!values.password) {
+      errors.password = "Password is required";
+    } else if (values.password.length < 8) {
+      errors.password = "Password must be more than 8 characters";
+    } else if (values.password.length > 10) {
       errors.passWord = "Password cannot exceed more than 10 characters";
     }
-    if (!values.confirmPassword) {
-      errors.confirmPassword = "Confirm Password is required";
-    } else if (values.confirmPassword.length < 8) {
-      errors.confirmPassword = "Password must be more than 8 characters";
-    } else if (values.confirmPassword.length > 10) {
-      errors.confirmPassword = "Password cannot exceed more than 10 characters";
-    }
-    if(values.passWord!==values.confirmPassword){
-      errors.confirmPassword="Password Doesn't Matched";
-    }
-    if (!values.roleName) {
-      errors.roleName = "Role is Mandatory";
+    if (!values.role) {
+      errors.role = "Role is Mandatory";
     }
     if (!values.phoneNumber) {
       errors.phoneNumber = "Phone Number is Mandatory";
@@ -76,14 +66,13 @@ export default function AddUser() {
     } else if (values.phoneNumber.length > 10) {
       errors.phoneNumber = "PhoneNumber cannot exceed more than 10 characters";
     }
+    if (!values.points) {
+      errors.points = "points Number is Mandatory";
+    }else if (values.points.length < 0) {
+      errors.points = "points must be more than 0 characters";
     return errors;
   };
-
-
-  // const dis = () => {
-
-  // };
-
+  }
   return (
     <div className="container">
       <div className="row">
@@ -98,12 +87,13 @@ export default function AddUser() {
                 type={"text"}
                 className="form-control"
                 placeholder="Enter your username"
-                name="userName"
-                value={userName}
+                name="username"
+                value={username}
                 onChange={(e) => onInputChange(e)}
+                
               />
             </div>
-            <p>{formErrors.userName}</p>
+            <p>{formErrors.username}</p>
             
             <div className="mb-3">
               <label htmlFor="Email" className="form-label">
@@ -113,12 +103,12 @@ export default function AddUser() {
                 type={"text"}
                 className="form-control"
                 placeholder="Enter your e-mail address"
-                name="emailId"
-                value={emailId}
+                name="email"
+                value={email}
                 onChange={(e) => onInputChange(e)}
               />
             </div>
-            <p>{formErrors.emailId}</p>
+            <p>{formErrors.email}</p>
 
             <div className="mb-3">
               <label htmlFor="Password" className="form-label">
@@ -128,50 +118,34 @@ export default function AddUser() {
                 type={"password"}
                 className="form-control"
                 placeholder="Enter your Password"
-                name="passWord"
-                value={passWord}
+                name="password"
+                value={password}
                 onChange={(e) => onInputChange(e)}
               />
             </div>
-            <p>{formErrors.passWord}</p>
-
-            <div className="mb-3">
-              <label htmlFor="ConfirmPassword" className="form-label">
-                ConfirmPassword
-              </label>
-              <input
-                type={"password"}
-                className="form-control"
-                placeholder="Re-Enter your Password"
-                name="confirmPassword"
-                value={confirmPassword}
-                onChange={(e) => onInputChange(e)}
-              />
-            </div>
-            <p>{formErrors.confirmPassword}</p>
+            <p>{formErrors.password}</p>
             
-
             <div className="mb-3">
               <label htmlFor="Role" className="form-label" />
               Select A Role
               <select
                 className="form-select"
                 aria-label="Default select example"
-                name="roleName"
-                value={roleName}
+                name="role"
+                value={role}
                 onChange={(e) => onInputChange(e)}
             
               >
                 <option hidden placeholder="Select Role"></option>
-                <option name="roleName" value="ADMIN">
-                  Admin
+                <option name="role" value="admin">
+                  admin
                 </option>
-                <option name="roleName" value="USER">
-                  User
+                <option name="role" value="user">
+                 user
                 </option>
               </select>
             </div>
-            <p>{formErrors.roleName}</p>
+            <p>{formErrors.role}</p>
 
             <div className="mb-3">
               <label htmlFor="PhoneNumber" className="form-label">
@@ -188,9 +162,23 @@ export default function AddUser() {
             </div>
             <p>{formErrors.phoneNumber}</p>
 
+            <div className="mb-3">
+              <label htmlFor="points" className="form-label">
+                points
+              </label>
+              <input
+                type={"number"}
+                className="form-control"
+                placeholder="Enter your phoneNumber"
+                name="points"
+                value={points}
+                onChange={(e) => onInputChange(e)}
+              />
+            </div>
+            <p>{formErrors.points}</p>
+
             <button type="submit" id="loginBtn"
              className="btn btn-outline-primary" 
-             
              >
               Signup
             </button>
@@ -202,4 +190,4 @@ export default function AddUser() {
       </div>
     </div>
   );
-}
+  }

@@ -6,15 +6,13 @@ export default function Login() {
   let navigate = useNavigate();
 
   const [user, setUser] = useState({
-    userName: "",
-    passWord: "",
-    emailId: "",
+    username: "",
+    password: "",
   });
 
   const {
-    userName,
-    passWord,
-    emailId,
+    username,
+    password,
   } = user;
 
   const [formErrors, setFormErrors] = useState({});
@@ -32,68 +30,43 @@ export default function Login() {
 
   const validate = (values) => {
     const errors = {};
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-    if (!values.userName) {
+    if (!values.username) {
       errors.userName = "UserName is Mandatory!";
-    }else if (values.userName.length<4) {
-      errors.userName = "UserName must be more than 3 characters!";
+    }else if (values.username.length<4) {
+      errors.username = "UserName must be more than 3 characters!";
     }
-    if (!values.emailId) {
-      errors.emailId = "Email is required!";
-    } else if (!regex.test(values.emailId)) {
-      errors.emailId = "This is not a valid email format!";
-    }
-    if (!values.passWord) {
-      errors.passWord = "Password is required";
-    } else if (values.passWord.length < 8) {
-      errors.passWord = "Password must be more than 8 characters";
+    if (!values.password) {
+      errors.password = "Password is required";
+    } else if (values.password.length < 8) {
+      errors.password = "Password must be more than 8 characters";
     } else if (values.passWord.length > 10) {
-      errors.passWord = "Password cannot exceed more than 10 characters";
+      errors.password = "Password cannot exceed more than 10 characters";
     }
     return errors;
   };
 
 
-  // const dis = () => {
-
-  // };
 
   return (
     <div className="container">
       <div className="row">
         <div className="col-md-6 offset-md-3 border rounded p-4 mt-2 shadow">
-          <h2 className="text-center m-4">Registration</h2>
+          <h2 className="text-center m-4">Login</h2>
           <form id="signUpForm" onSubmit={(e) => onSubmit(e)} autoComplete="off">
             <div className="mb-3">
-              <label htmlFor="UserName" className="form-label">
+              <label htmlFor="Username" className="form-label">
                 UserName
               </label>
               <input
                 type={"text"}
                 className="form-control"
                 placeholder="Enter your username"
-                name="userName"
-                value={userName}
+                name="username"
+                value={username}
                 onChange={(e) => onInputChange(e)}
               />
             </div>
-            <p>{formErrors.userName}</p>
-            
-            <div className="mb-3">
-              <label htmlFor="Email" className="form-label">
-                E-mail
-              </label>
-              <input
-                type={"text"}
-                className="form-control"
-                placeholder="Enter your e-mail address"
-                name="emailId"
-                value={emailId}
-                onChange={(e) => onInputChange(e)}
-              />
-            </div>
-            <p>{formErrors.emailId}</p>
-
+            <p>{formErrors.username}</p>
             <div className="mb-3">
               <label htmlFor="Password" className="form-label">
                 Password
@@ -102,16 +75,14 @@ export default function Login() {
                 type={"password"}
                 className="form-control"
                 placeholder="Enter your Password"
-                name="passWord"
-                value={passWord}
+                name="password"
+                value={password}
                 onChange={(e) => onInputChange(e)}
               />
             </div>
-            <p>{formErrors.passWord}</p>
-
+            <p>{formErrors.password}</p>
             <button type="submit" id="loginBtn"
-             className="btn btn-outline-primary" 
-             
+             className="btn btn-outline-primary"              
              >
               Login
             </button>

@@ -41,3 +41,8 @@
 p {
   color: red;
 }
+
+input {
+  width: 10%;
+  height: 60%;
+}
