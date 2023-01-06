@@ -4,8 +4,8 @@ import { Link, useParams } from "react-router-dom";
 
 export default function ViewUser() {
   const [user, setUser] = useState({
-    userName: "",
-    emailId: "",
+    username: "",
+    email: "",
     phoneNumber: "",
   });
 
@@ -16,7 +16,7 @@ export default function ViewUser() {
   }, []);
 
   const loadUser = async () => {
-    const result = await axios.get(`http://localhost:8001/getUser/${id}`);
+    const result = await axios.get(`http://localhost:8001/api/auth/get/${id}`);
     setUser(result.data);
   };
 
@@ -32,11 +32,11 @@ export default function ViewUser() {
               <ul className="list-group list-group-flush">
                 <li className="list-group-item">
                   <b>UserName:</b>
-                  {user.userName}
+                  {user.username}
                 </li>
                 <li className="list-group-item">
                   <b>EmailId:</b>
-                  {user.emailId}
+                  {user.email}
                 </li>
                 <li className="list-group-item">
                   <b>Phone Number:</b>

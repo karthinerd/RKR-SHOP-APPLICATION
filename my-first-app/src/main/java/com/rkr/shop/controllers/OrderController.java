@@ -2,6 +2,8 @@ package com.rkr.shop.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.rkr.shop.Dto.OrderDTO;
 import com.rkr.shop.Dto.ResponseOrderDTO;
+import com.rkr.shop.ResponseStructure.ResponseStructureDto;
 import com.rkr.shop.Util.DateUtil;
 import com.rkr.shop.models.Order;
 import com.rkr.shop.models.User;
@@ -25,13 +28,16 @@ import com.rkr.shop.security.services.UserDetailsServiceImpl;
 @RequestMapping("/product/order")
 public class OrderController {
 
+	@Autowired
 	private OrderService orderService;
+	
+	@Autowired
 	private UserDetailsServiceImpl userService;
 
-	public OrderController(OrderService orderService, UserDetailsServiceImpl userService) {
-		this.orderService = orderService;
-		this.userService = userService;
-	}
+//	public OrderController(OrderService orderService, UserDetailsServiceImpl userService) {
+//		this.orderService = orderService;
+//		this.userService = userService;
+//	}
 
 	private Logger logger = LoggerFactory.getLogger(OrderController.class);
 
@@ -44,8 +50,7 @@ public class OrderController {
     
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@PostMapping("/placeOrder")
-	public ResponseEntity<ResponseOrderDTO> placeOrder(@RequestBody OrderDTO orderDTO) {
-		logger.info("Request Payload " + orderDTO.toString());
+	public ResponseEntity<ResponseStructureDto> placeOrder(@RequestBody OrderDTO orderDTO) {
 		ResponseOrderDTO responseOrderDTO = new ResponseOrderDTO();
 		int amount = orderService.getCartAmount(orderDTO.getCartItems());
 		User customer = new User(orderDTO.getCustomerName(), orderDTO.getCustomerEmail());
@@ -67,8 +72,12 @@ public class OrderController {
 		responseOrderDTO.setDate(DateUtil.getCurrentDateTime());
 		responseOrderDTO.setOrderId(order.getId());
         responseOrderDTO.setUserId(order.getUser().getId());
-		logger.info("test push..");
+		logger.info("Order Placed..");
+		
+		ResponseStructureDto responseStructure = new ResponseStructureDto();
+		responseStructure.setStatus(HttpStatus.OK);
+		responseStructure.setDataObject(responseOrderDTO);
+		return new ResponseEntity<ResponseStructureDto>(responseStructure, HttpStatus.OK);
 
-		return ResponseEntity.ok(responseOrderDTO);
 	}
 }

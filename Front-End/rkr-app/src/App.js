@@ -13,7 +13,6 @@ import AddProduct from "./Products/AddProduct";
 import ListProducts from "./Products/ListProducts";
 import ViewProduct from "./Products/ViewProduct";
 import EditProduct from "./Products/EditProduct";
-import Register from "./Components/register.component";
 
 function App() {
   return (
@@ -29,8 +28,9 @@ function App() {
         </div>
 
         <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route exact path="/signup" element={<Register />} />
+          <Route exact path="/"/>
+          <Route exact path="/productList" element={<Home />} />
+          <Route exact path="/signup" element={<AddUser />} />
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/edituser/:id" element={<EditUser />} />
           <Route exact path="/viewuser/:id" element={<ViewUser />} />

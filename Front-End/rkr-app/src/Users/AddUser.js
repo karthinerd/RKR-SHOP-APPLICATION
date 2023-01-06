@@ -10,7 +10,7 @@ export default function AddUser() {
     password: "",
     email: "",
     phoneNumber: "",
-    role: "",
+    role: [" "],
     points:""
   });
 
@@ -33,7 +33,7 @@ export default function AddUser() {
     e.preventDefault();
     setFormErrors(validate(user));
     await axios.post("http://localhost:8001/api/auth/signup", user);
-    navigate("/");
+    navigate("/login");
   };
 
   const validate = (values) => {

@@ -12,13 +12,13 @@ export default function Home() {
   }, []);
 
   const loadUsers = async () => {
-    const result = await axios.get("http://localhost:8001/getUser");
+    const result = await axios.get("http://localhost:8001/api/auth/getAll");
     setUsers(result.data);
   };
 
   const deleteUser = async (id) => {
     if (window.confirm("Do You Want Delete!") == true) {
-    await axios.delete(`http://localhost:8001/user/${id}`);
+    await axios.delete(`http://localhost:8001/api/auth/delete/${id}`);
     }
     loadUsers();
  
@@ -34,7 +34,7 @@ export default function Home() {
               <th scope="col">Username</th>
               <th scope="col">Email</th>
               <th scope="col">Phone Number</th>
-              
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -43,8 +43,8 @@ export default function Home() {
                 <th scope="row" key={index}>
                   {index + 1}
                 </th>
-                <td>{user.userName}</td>
-                <td>{user.emailId}</td>
+                <td>{user.username}</td>
+                <td>{user.email}</td>
                 <td>{user.phoneNumber}</td>
                 <td>
                   <Link

@@ -15,7 +15,7 @@ import com.rkr.shop.repository.UserRepository;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 	
-  @Autowired
+  @Autowired(required = true)
   UserRepository userRepository;
 
   @Override

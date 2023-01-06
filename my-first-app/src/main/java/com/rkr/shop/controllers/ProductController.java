@@ -1,11 +1,8 @@
 package com.rkr.shop.controllers;
 
-import java.util.List;
-import java.util.Optional;
-
 import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,11 +13,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.rkr.shop.ResponseStructure.ResponseStructureDto;
 import com.rkr.shop.models.Product;
-import com.rkr.shop.repository.ProductRepository;
 import com.rkr.shop.security.services.ProductService;
-
 
 @RestController
 @RequestMapping("/product")
@@ -28,56 +23,46 @@ import com.rkr.shop.security.services.ProductService;
 public class ProductController {
 
 	@Autowired
-	private ProductRepository productRepository;
-	
-	@Autowired
-	private ProductService service;
+	private ProductService productService;
 
 	@PostMapping("/addProduct")
 	@PreAuthorize("hasRole('ADMIN')")
-	Product entity(@Valid @RequestBody Product entity) {
+	public ResponseEntity<ResponseStructureDto> createProduct(@Valid @RequestBody Product entity) {
 
-		Product alreadyExist = productRepository.findByProductName(entity.getProductName());
-		
-		if(alreadyExist!=null)throw new RuntimeException("This Product Name Already Taken");
-		
-		return productRepository.save(entity);
+		return productService.createProduct(entity);
+
 	}
 
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@GetMapping("/getProduct")
-	List<Product> getAllUser() {
-		return productRepository.findAll();
+	public ResponseEntity<ResponseStructureDto> getAllProduct() {
+
+		return productService.getAllProduct();
+
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/getProduct/{id}")
-	Optional<Product> getById(@PathVariable Long id) {
-		return service.getProductById(id);
+	public ResponseEntity<ResponseStructureDto> getById(@PathVariable Long id) {
+
+		return productService.getProductById(id);
+
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@PutMapping("/updateProduct/{id}")
-	Product updateProduct(@RequestBody Product newProduct, @PathVariable Long id) {
-		
-		Product productIn = productRepository.findProductExistOrNot(newProduct.getProductName(),newProduct.getId() );
-		if(productIn != null)throw new RuntimeException("ProductName Already Taken");
-		return productRepository.findById(id).map(product -> {
-			product.setProductName(newProduct.getProductName());
-			product.setAvailableQuantity(newProduct.getAvailableQuantity());
-			product.setProductDescription(newProduct.getProductDescription());
-			product.setPrice(newProduct.getPrice());
-			return productRepository.save(product);
-		}).orElseThrow();
+	public ResponseEntity<ResponseStructureDto> updateProduct(@RequestBody Product newProduct, @PathVariable Long id) {
+
+		return productService.updateProduct(newProduct, id);
+
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/deleteProduct/{id}")
-	String deleteuser(@PathVariable Long id) {
+	public ResponseEntity<ResponseStructureDto> deleteuser(@PathVariable Long id) {
 
-		productRepository.deleteById(id);
+		return productService.deleteById(id);
 
-		return "Product With Id " + id + " has been Deleted Successfully...";
 	}
 
 }

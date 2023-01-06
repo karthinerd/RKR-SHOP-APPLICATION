@@ -24,7 +24,7 @@ export default function Login() {
   const onSubmit = async (e) => {
     e.preventDefault();
     setFormErrors(validate(user));
-    await axios.post("http://localhost:8002/login", user);
+    await axios.post("http://localhost:8001/api/auth/signin", user);
     navigate("/");
   };
 
