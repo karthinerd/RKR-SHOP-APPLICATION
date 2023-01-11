@@ -20,6 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.rkr.shop.security.services.UserDetailsServiceImpl;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
+	
   @Autowired
   private JwtUtils jwtUtils;
 
@@ -62,4 +63,5 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     return null;
   }
+  
 }

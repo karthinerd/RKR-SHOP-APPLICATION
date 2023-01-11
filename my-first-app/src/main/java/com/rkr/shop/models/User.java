@@ -33,28 +33,27 @@ public class User {
 	@Email
 	private String email;
 
-
 	@Size(max = 120)
 	private String password;
-	
+
 	private int points;
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
-	
+
 	// @Size(min=10 , max = 15 , message = "Phone Number Should have at least 10
 	// numbers")
 	private String phoneNumber;
 
-	private boolean isActive;
+	private String isActive;
 
 	private LocalDateTime createdAt;
 
 	private LocalDateTime updatedAt;
 
 	private LocalDateTime activatedAt;
-	
+
 	@PrePersist
 	public void onSave() {
 
@@ -64,28 +63,25 @@ public class User {
 
 		this.updatedAt = now;
 	}
-	
+
 	@PostPersist
 	public void onUpdate() {
-		
+
 		LocalDateTime now = LocalDateTime.now();
 
 		this.updatedAt = now;
 	}
 
-	public User(String username, String email, int points ,
-		String phoneNumber, String password ) {
+	public User(String username, String email, String phoneNumber, String password) {
 		this.username = username;
 		this.email = email;
 		this.password = password;
-		this.phoneNumber=phoneNumber;
-		this.points=points;
+		this.phoneNumber = phoneNumber;
 	}
 
 	public User(String username, String email) {
 		this.username = username;
 		this.email = email;
-			}
+	}
 
-	
 }

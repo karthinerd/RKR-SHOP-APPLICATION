@@ -1,9 +1,6 @@
 package com.rkr.shop.ResponseStructure;
 
-
-
 import org.springframework.http.HttpStatus;
-
 import lombok.Data;
 
 @Data
@@ -16,5 +13,3 @@ public class ResponseStructureDto {
 	private Object dataObject;
 	
 }
-
-

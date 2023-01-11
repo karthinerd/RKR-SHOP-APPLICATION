@@ -27,26 +27,25 @@ import lombok.ToString;
 @Entity
 @Table(name = "myorder")
 public class Order {
-	
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    
-    @OneToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
-    
-    private String orderPlacedBy;
-    
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = ShoppingCart.class)
-    @JoinColumn(name = "order_id", referencedColumnName = "id")
-    private List<ShoppingCart> cartItems;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    private int amount;
-	
+	@OneToOne(cascade = CascadeType.MERGE)
+	@JoinColumn(name = "user_id", referencedColumnName = "id")
+	private User user;
+
+	private String orderPlacedBy;
+
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = ShoppingCart.class)
+	@JoinColumn(name = "order_id", referencedColumnName = "id")
+	private List<ShoppingCart> cartItems;
+
+	private int amount;
+
 	private LocalDateTime orderPlacedAt;
-	
+
 	@PrePersist
 	public void onSave() {
 
@@ -55,12 +54,11 @@ public class Order {
 		this.orderPlacedAt = now;
 	}
 
-	public Order(List<ShoppingCart> cartItems, User customer, String customerName
-			) {
+	public Order(List<ShoppingCart> cartItems, User customer, String customerName) {
 		this.user = customer;
-        this.cartItems = cartItems;
-        this.orderPlacedBy=customerName;
-     
+		this.cartItems = cartItems;
+		this.orderPlacedBy = customerName;
+
 	}
 
 }

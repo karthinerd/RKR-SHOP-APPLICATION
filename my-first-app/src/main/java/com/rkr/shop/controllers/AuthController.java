@@ -22,51 +22,60 @@ import com.rkr.shop.security.services.UserService;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-	
+
 	@Autowired
 	private UserService userService;
 
 	@PostMapping("/signin")
 	public ResponseEntity<ResponseStructureDto> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
-	  return userService.loginUser(loginRequest);
+		return userService.loginUser(loginRequest);
 
 	}
 
 	@PostMapping("/signup")
 	public ResponseEntity<ResponseStructureDto> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-				
+
 		return userService.createUser(signUpRequest);
 
 	}
-
+ 
 	@PutMapping("/update/{id}")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<ResponseStructureDto> updateUser(@Valid @RequestBody SignupRequest signUpRequest,
 			@PathVariable Long id) {
-		
-		return userService.updateUser(signUpRequest,id);
-		
+
+		return userService.updateUser(signUpRequest, id);
+
 	}
 
 	@GetMapping("/getAll")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ResponseStructureDto> getAllUser() {
-		
+
 		return userService.getAllUser();
-		
+
 	}
 
 	@GetMapping("/get/{id}")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<ResponseStructureDto> getUserById(@PathVariable Long id) {
-		
-         return	userService.getUserById(id);
+
+		return userService.getUserById(id);
 	}
 
 	@DeleteMapping("/delete/{id}")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<ResponseStructureDto> delete(@PathVariable Long id) {
 
 		return userService.deleteUserById(id);
-		
+
+	}
+	
+	@PreAuthorize("hasRole('ADMIN')")
+	@GetMapping("/active/{id}")
+	public ResponseEntity<ResponseStructureDto> activeUser(@PathVariable Long id){
+		return userService.activeUser(id);
 	}
 
 }

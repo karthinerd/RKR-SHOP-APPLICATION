@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.rkr.shop.Dto.OrderDTO;
 import com.rkr.shop.Dto.ResponseOrderDTO;
 import com.rkr.shop.ResponseStructure.ResponseStructureDto;
@@ -30,24 +29,20 @@ public class OrderController {
 
 	@Autowired
 	private OrderService orderService;
-	
+
 	@Autowired
 	private UserDetailsServiceImpl userService;
-
-//	public OrderController(OrderService orderService, UserDetailsServiceImpl userService) {
-//		this.orderService = orderService;
-//		this.userService = userService;
-//	}
 
 	private Logger logger = LoggerFactory.getLogger(OrderController.class);
 
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@GetMapping(value = "/getOrder/{orderId}")
-	public ResponseEntity<Order> getOrderDetails(@PathVariable int orderId) {
-		Order order = orderService.getOrderDetail(orderId);
-		return ResponseEntity.ok(order);
+	public ResponseEntity<ResponseStructureDto> getOrderDetails(@PathVariable int orderId) {
+
+		return orderService.getOrderDetail(orderId);
+
 	}
-    
+
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@PostMapping("/placeOrder")
 	public ResponseEntity<ResponseStructureDto> placeOrder(@RequestBody OrderDTO orderDTO) {
@@ -58,26 +53,32 @@ public class OrderController {
 		if (customerIdFromDb != null) {
 			customer.setId(customerIdFromDb);
 			orderService.reducePoints(customerIdFromDb, amount);
-			logger.info("Customer already present in db with id : " + customerIdFromDb);
+			//logger.info("Customer already present in db with id : " + customerIdFromDb);
 		} else {
 			logger.info("No Customer Found with The Given Name and Email ");
 		}
-		Order order = new Order(orderDTO.getCartItems(), customer,  orderDTO.getCustomerName());
+		Order order = new Order(orderDTO.getCartItems(), customer, orderDTO.getCustomerName());
 		order.setAmount(amount);
-		
+
 		order = orderService.saveOrder(order);
 		logger.info("Order processed successfully..");
 
 		responseOrderDTO.setAmount(amount);
 		responseOrderDTO.setDate(DateUtil.getCurrentDateTime());
 		responseOrderDTO.setOrderId(order.getId());
-        responseOrderDTO.setUserId(order.getUser().getId());
+		responseOrderDTO.setUserId(order.getUser().getId());
 		logger.info("Order Placed..");
-		
+
 		ResponseStructureDto responseStructure = new ResponseStructureDto();
 		responseStructure.setStatus(HttpStatus.OK);
 		responseStructure.setDataObject(responseOrderDTO);
 		return new ResponseEntity<ResponseStructureDto>(responseStructure, HttpStatus.OK);
 
+	}
+	
+	@GetMapping("/orderHistory/{userId}")
+	public ResponseEntity<ResponseStructureDto> getOrderHistory(@PathVariable Long userId){
+		return orderService.getHistory(userId);
+		
 	}
 }

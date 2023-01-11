@@ -1,7 +1,6 @@
 package com.rkr.shop.payload.request;
 
 import javax.validation.constraints.NotBlank;
-
 import lombok.Data;
 
 @Data

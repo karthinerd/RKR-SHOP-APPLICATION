@@ -9,11 +9,11 @@ import lombok.Data;
 @Data
 public class ResponseOrderDTO {
 
-    private int amount;
-    private String date;
-    private List<ShoppingCart> productName;
-    private String quantity;
-    private long userId;
-    private long orderId;
+	private int amount;
+	private String date;
+	private List<ShoppingCart> productName;
+	private String quantity;
+	private long userId;
+	private long orderId;
 
 }

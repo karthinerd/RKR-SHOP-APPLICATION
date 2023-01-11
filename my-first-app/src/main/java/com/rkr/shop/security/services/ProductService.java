@@ -13,7 +13,7 @@ import com.rkr.shop.models.Product;
 import com.rkr.shop.repository.ProductRepository;
 
 @Service
-public class ProductService { 
+public class ProductService {
 
 	@Autowired
 	private ProductRepository repository;
@@ -91,11 +91,11 @@ public class ProductService {
 					MessagesResponse.PRODUCT_ALREADY_EXIST.getMessage()));
 			return new ResponseEntity<ResponseStructureDto>(responseStructure, HttpStatus.BAD_REQUEST);
 		}
-		
+
 		Optional<Product> findProduct = repository.findById(id);
-		
+
 		if (findProduct.isPresent()) {
-			Product product = new Product();
+			Product product = findProduct.get();
 			product.setProductName(newProduct.getProductName());
 			product.setAvailableQuantity(newProduct.getAvailableQuantity());
 			product.setProductDescription(newProduct.getProductDescription());
@@ -110,5 +110,5 @@ public class ProductService {
 				MessagesResponse.PRODUCT_NOT_FOUND.getMessage()));
 		return new ResponseEntity<ResponseStructureDto>(responseStructure, HttpStatus.NOT_FOUND);
 	}
-	
+
 }
