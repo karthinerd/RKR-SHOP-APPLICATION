@@ -54,24 +54,6 @@ public class User {
 
 	private LocalDateTime activatedAt;
 
-	@PrePersist
-	public void onSave() {
-
-		LocalDateTime now = LocalDateTime.now();
-
-		this.createdAt = now;
-
-		this.updatedAt = now;
-	}
-
-	@PostPersist
-	public void onUpdate() {
-
-		LocalDateTime now = LocalDateTime.now();
-
-		this.updatedAt = now;
-	}
-
 	public User(String username, String email, String phoneNumber, String password) {
 		this.username = username;
 		this.email = email;
