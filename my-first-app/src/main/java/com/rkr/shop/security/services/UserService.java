@@ -229,7 +229,7 @@ public class UserService {
 				user.setPoints(100);
 				userRepository.save(user);
 				responseStructure.setStatus(HttpStatus.OK);
-				responseStructure.setDataObject(user);
+				responseStructure.setDataObject(MessagesResponse.USER_ACTIVATED.getMessage());
 				return new ResponseEntity<ResponseStructureDto>(responseStructure, HttpStatus.OK);
 			} else {
 				responseStructure.setStatus(HttpStatus.BAD_REQUEST);

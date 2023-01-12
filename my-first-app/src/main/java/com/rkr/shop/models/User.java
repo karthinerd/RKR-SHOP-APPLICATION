@@ -4,10 +4,21 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -53,6 +64,16 @@ public class User {
 	private LocalDateTime updatedAt;
 
 	private LocalDateTime activatedAt;
+	
+	@PrePersist
+	public void onSave() {
+
+		LocalDateTime now = LocalDateTime.now();
+
+		this.createdAt = now;
+
+		this.updatedAt = now;
+	}
 
 	public User(String username, String email, String phoneNumber, String password) {
 		this.username = username;
