@@ -25,10 +25,4 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		return UserDetailsImpl.build(user);
 	}
 
-	public Long isCustomerPresent(User customer) {
-		User customer1 = userRepository.getUserByEmailAndUsername(customer.getEmail(), customer.getUsername());
-		return customer1 != null ? customer1.getId() : null;
-	}
-
-
 }

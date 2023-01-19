@@ -8,11 +8,36 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import _ from "lodash";
 
 export default function UserList() {
+
+ const [disabled,setDisabled]=useState(false);
+
+  async function getAccessToken() {
+    return { Authorization: localStorage.getItem("Authorization")}
+  }
+  
   const [users, setUsers] = useState([]);
 
   const [open, setOpen] = React.useState(false);
+
+  const pageSize = 10 ;
+
+  const [paginatedPosts,setPaginatedPosts] = useState([]);
+
+  const [currentPage , setCurrentPage] = useState(1);
+
+  const pageCount = users? Math.ceil(users.length/pageSize):0;
+
+  const pages = _.range(1,pageCount+1);
+
+  const pagination = (pageno)=>{
+    setCurrentPage(pageno);
+    const startIntex = (pageno - 1) * pageSize;
+    const paginatedPost = _(users).slice(startIntex).take(pageSize).value();
+    setPaginatedPosts(paginatedPost);
+  }
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -31,6 +56,7 @@ export default function UserList() {
       headers: authHeader(),
     });
     setUsers(result.data.dataObject);
+    setPaginatedPosts(_(result.data.dataObject).slice(0).take(pageSize).value());
   };
 
   const deleteUser = async (id) => {
@@ -42,10 +68,20 @@ export default function UserList() {
   };
 
   const activateUser = async (id) => {
-    await axios.post(`http://localhost:8001/api/auth/activate/${id}`, {
-      headers: authHeader(),
-    });
-  };
+    setDisabled(true);
+    await axios.get(`http://localhost:8001/api/auth/activateUser/${id}`, {
+      headers: await getAccessToken(),
+    }).then(
+      (response) => {
+            setDisabled(true);
+      },
+      (error) => {
+         setDisabled(false);
+      }
+    );;
+    loadUsers();
+};
+
 
   return (
     <div className="container">
@@ -53,7 +89,7 @@ export default function UserList() {
         <table className="table border shadow">
           <thead>
             <tr>
-              <th scope="col">S.N</th>
+              <th scope="col">User Id</th>
               <th scope="col">Username</th>
               <th scope="col">Email</th>
               <th scope="col">Phone Number</th>
@@ -61,10 +97,10 @@ export default function UserList() {
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => (
+            {paginatedPosts.map((user, index) => (
               <tr>
                 <th scope="row" key={index}>
-                  {index + 1}
+                  {user.id}
                 </th>
                 <td>{user.username}</td>
                 <td>{user.email}</td>
@@ -82,6 +118,20 @@ export default function UserList() {
                   ><i class="fa fa-trash"></i>
                     Delete
                   </button>
+                  
+                  <button
+                  disabled={disabled}
+                    className="btn btn-success"
+                    onClick={() => activateUser(user.id)}
+                  >
+                    Activate
+                  </button>
+                  <Link
+                    className="btn btn-outline-secondary mx-2"
+                    to={`/activateHistory/${user.id}`}
+                  >
+                    Activity Log
+                  </Link>
 
                   <Dialog
                     open={open}
@@ -104,18 +154,26 @@ export default function UserList() {
                       </Button>
                     </DialogActions>
                   </Dialog>
-
-                  <button
-                    className="btn btn-success"
-                    onClick={() => activateUser(user.id)}
-                  >
-                    Activate
-                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+        <nav>
+          <ul className="pagination">
+            {
+              pages.map((page)=>(
+                <li className={
+                  page === currentPage ? "page-item active" : "page-item"
+                }>
+                  <p className="page-link"
+                  onClick={()=>pagination(page)}
+                  >{page}</p>
+                  </li>
+              ))
+            }
+          </ul>
+        </nav>
       </div>
     </div>
   );

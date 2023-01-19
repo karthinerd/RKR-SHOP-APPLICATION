@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import authHeader from "../Services/auth-header";
 
 export default function EditProduct() {
+  
   let navigate = useNavigate();
 
   const { id } = useParams();
@@ -20,7 +21,6 @@ export default function EditProduct() {
     productName,
     productDescription,
     availableQuantity,
-    productImage,
     price,
   } = product;
 
@@ -107,6 +107,7 @@ export default function EditProduct() {
                 onChange={(e) => onInputChange(e)}
                 
               ></textarea>
+
             </div>
             <div className="mb-3">
               <label htmlFor="AvailableQuantity" className="form-label">
@@ -123,21 +124,6 @@ export default function EditProduct() {
               />
             </div>
             <p>{formErrors.availableQuantity}</p>
-            
-            <div class="mb-3">
-              <label for="formFile" class="form-label">
-                productImage
-              </label>
-              <input
-                class="form-control"
-                type="file"
-                id="formFile"
-                name="productImage"
-                value={productImage}
-                onChange={(e) => onInputChange(e)}
-                
-              />
-            </div>
             
             <div className="mb-3">
               <label htmlFor="price" className="form-label">

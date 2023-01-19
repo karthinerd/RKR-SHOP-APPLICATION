@@ -35,6 +35,12 @@ const Profile = () => {
                     to={`/edituser/${currentUser.dataObject.id}`}
                   >
                     Edit
+                </Link>
+                <Link
+                    className="btn btn-outline-secondary mx-2"
+                    to={`/activateHistory/${currentUser.dataObject.id}`}
+                  >
+                    Activity Log
                   </Link>
                 </td>
               </tr>

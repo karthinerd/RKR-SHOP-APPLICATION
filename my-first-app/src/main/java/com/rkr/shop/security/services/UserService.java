@@ -1,6 +1,6 @@
 package com.rkr.shop.security.services;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -23,12 +23,14 @@ import org.springframework.stereotype.Service;
 import com.rkr.shop.ResponseStructure.ErrorResponseDto;
 import com.rkr.shop.ResponseStructure.ResponseStructureDto;
 import com.rkr.shop.enums.MessagesResponse;
+import com.rkr.shop.models.ActivityLog;
 import com.rkr.shop.models.ERole;
 import com.rkr.shop.models.Role;
 import com.rkr.shop.models.User;
 import com.rkr.shop.payload.request.LoginRequest;
 import com.rkr.shop.payload.request.SignupRequest;
 import com.rkr.shop.payload.response.JwtResponse;
+import com.rkr.shop.repository.ActivityLogRepository;
 import com.rkr.shop.repository.RoleRepository;
 import com.rkr.shop.repository.UserRepository;
 import com.rkr.shop.security.jwt.JwtUtils;
@@ -44,6 +46,9 @@ public class UserService {
 
 	@Autowired
 	RoleRepository roleRepository;
+
+	@Autowired
+	private ActivityLogRepository activityLogRepository;
 
 	@Autowired
 	AuthenticationManager authenticationManager;
@@ -99,30 +104,26 @@ public class UserService {
 
 		ResponseStructureDto responseStructure = new ResponseStructureDto();
 
-		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-			responseStructure.setStatus(HttpStatus.BAD_REQUEST);
-			responseStructure.setErrorObject(new ErrorResponseDto(MessagesResponse.USER_NAME_TAKEN.name(),
-					MessagesResponse.USER_NAME_TAKEN.getMessage()));
-			return new ResponseEntity<ResponseStructureDto>(responseStructure, HttpStatus.BAD_REQUEST);
-		}
-
-		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-			responseStructure.setStatus(HttpStatus.BAD_REQUEST);
-			responseStructure.setErrorObject(new ErrorResponseDto(MessagesResponse.EMAIL_ALREADY_EXIST.name(),
-					MessagesResponse.EMAIL_ALREADY_EXIST.getMessage()));
-			return new ResponseEntity<ResponseStructureDto>(responseStructure, HttpStatus.BAD_REQUEST);
-		}
-
 		Optional<User> userById = userRepository.findById(id);
 		if (userById.isPresent()) {
 			User user = userById.get();
 			user.setUsername(signUpRequest.getUsername());
-			user.setPassword(encoder.encode(signUpRequest.getPassword()));
 			user.setEmail(signUpRequest.getEmail());
-			user.setPoints(signUpRequest.getPoints());
+			int added = signUpRequest.getPoints() + user.getPoints();
+			user.setPoints(added);
 			user.setPhoneNumber(signUpRequest.getPhoneNumber());
-			user.setUpdatedAt(LocalDateTime.now());
+			user.setUpdatedAt(LocalDate.now());
 			userRepository.save(user);
+
+			ActivityLog activityLog = new ActivityLog();
+			activityLog.setUserName(user.getUsername());
+			activityLog.setAddedPoints(signUpRequest.getPoints());
+			activityLog.setBalancePoints(added);
+			activityLog.setPointsAddedAt(LocalDate.now());
+			activityLog.setActivatedAt(user.getActivatedAt());
+			activityLog.setUserId(user.getId());
+			activityLogRepository.save(activityLog);
+
 			responseStructure.setStatus(HttpStatus.OK);
 			responseStructure.setDataObject(MessagesResponse.UPDATED_SUCCESSFULLY.getMessage());
 			return new ResponseEntity<ResponseStructureDto>(responseStructure, HttpStatus.OK);
@@ -166,7 +167,7 @@ public class UserService {
 					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 			roles.add(adminRole);
 			user.setIsActive("True");
-			user.setActivatedAt(LocalDateTime.now());
+			user.setActivatedAt(LocalDate.now());
 		} else {
 			Role userRole = roleRepository.findByName(ERole.ROLE_USER)
 					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
@@ -225,7 +226,7 @@ public class UserService {
 			User user = userById.get();
 			if (user.getIsActive().contains("False")) {
 				user.setIsActive("True");
-				user.setActivatedAt(LocalDateTime.now());
+				user.setActivatedAt(LocalDate.now());
 				user.setPoints(100);
 				userRepository.save(user);
 				responseStructure.setStatus(HttpStatus.OK);
@@ -244,4 +245,5 @@ public class UserService {
 		return new ResponseEntity<ResponseStructureDto>(responseStructure, HttpStatus.NOT_FOUND);
 
 	}
+
 }

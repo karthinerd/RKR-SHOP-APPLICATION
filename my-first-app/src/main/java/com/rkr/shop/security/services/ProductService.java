@@ -2,10 +2,12 @@ package com.rkr.shop.security.services;
 
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 import com.rkr.shop.ResponseStructure.ErrorResponseDto;
 import com.rkr.shop.ResponseStructure.ResponseStructureDto;
 import com.rkr.shop.enums.MessagesResponse;
@@ -46,14 +48,17 @@ public class ProductService {
 					MessagesResponse.PRODUCT_ALREADY_EXIST.getMessage()));
 			return new ResponseEntity<ResponseStructureDto>(responseStructure, HttpStatus.BAD_REQUEST);
 		}
+
 		Product product = repository.save(entity);
 		responseStructure.setStatus(HttpStatus.OK);
-		responseStructure.setDataObject(product);
+		responseStructure.setDataObject(MessagesResponse.PRODUCT_ADDED.getMessage());
 		return new ResponseEntity<ResponseStructureDto>(responseStructure, HttpStatus.OK);
 	}
+	
 
 	public ResponseEntity<ResponseStructureDto> getAllProduct() {
 		ResponseStructureDto responseStructure = new ResponseStructureDto();
+		
 		List<Product> product = repository.findAll();
 		if (product.isEmpty()) {
 			responseStructure.setStatus(HttpStatus.NOT_FOUND);
@@ -85,13 +90,6 @@ public class ProductService {
 
 		ResponseStructureDto responseStructure = new ResponseStructureDto();
 
-		if (repository.existsByProductName(newProduct.getProductName())) {
-			responseStructure.setStatus(HttpStatus.BAD_REQUEST);
-			responseStructure.setErrorObject(new ErrorResponseDto(MessagesResponse.PRODUCT_ALREADY_EXIST.name(),
-					MessagesResponse.PRODUCT_ALREADY_EXIST.getMessage()));
-			return new ResponseEntity<ResponseStructureDto>(responseStructure, HttpStatus.BAD_REQUEST);
-		}
-
 		Optional<Product> findProduct = repository.findById(id);
 
 		if (findProduct.isPresent()) {
@@ -110,5 +108,6 @@ public class ProductService {
 				MessagesResponse.PRODUCT_NOT_FOUND.getMessage()));
 		return new ResponseEntity<ResponseStructureDto>(responseStructure, HttpStatus.NOT_FOUND);
 	}
-
+	
+	 
 }

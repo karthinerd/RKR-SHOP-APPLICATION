@@ -1,17 +1,11 @@
 package com.rkr.shop.models;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalDate;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
@@ -31,34 +25,20 @@ public class Order {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
-	@OneToOne(cascade=CascadeType.MERGE)
-	@JoinColumn(name = "user_id", referencedColumnName = "id")
-	private User user;
-
+	private Long userId;
 	private String orderPlacedBy;
-
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = ShoppingCart.class)
-	@JoinColumn(name = "order_id", referencedColumnName = "id")
-	private List<ShoppingCart> cartItems;
-
+	private Long productId;
+	private String productName;
+	private int quantity;
 	private int amount;
-
-	private LocalDateTime orderPlacedAt;
+	private LocalDate orderPlacedAt;
 
 	@PrePersist
 	public void onSave() {
 
-		LocalDateTime now = LocalDateTime.now();
+		LocalDate now = LocalDate.now();
 
 		this.orderPlacedAt = now;
-	}
-
-	public Order(List<ShoppingCart> cartItems, User customer, String customerName) {
-		this.user = customer;
-		this.cartItems = cartItems;
-		this.orderPlacedBy = customerName;
-
 	}
 
 }

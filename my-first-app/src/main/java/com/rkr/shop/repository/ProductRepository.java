@@ -16,5 +16,5 @@ public interface ProductRepository extends JpaRepository<Product, Long>{
 	Product findProductExistOrNot(@Param("productName") String productName,@Param("id") long id);
 
 	boolean existsByProductName(String productName);
-		
+	
 }

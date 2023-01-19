@@ -1,6 +1,7 @@
 package com.rkr.shop.controllers;
 
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.rkr.shop.ResponseStructure.ResponseStructureDto;
 import com.rkr.shop.payload.request.LoginRequest;
 import com.rkr.shop.payload.request.SignupRequest;
@@ -39,7 +41,7 @@ public class AuthController {
 		return userService.createUser(signUpRequest);
 
 	}
- 
+
 	@PutMapping("/update/{id}")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<ResponseStructureDto> updateUser(@Valid @RequestBody SignupRequest signUpRequest,
@@ -71,10 +73,10 @@ public class AuthController {
 		return userService.deleteUserById(id);
 
 	}
-	
+
+	@GetMapping("/activateUser/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	@GetMapping("/active/{id}")
-	public ResponseEntity<ResponseStructureDto> activeUser(@PathVariable Long id){
+	public ResponseEntity<ResponseStructureDto> activeUser(@PathVariable Long id) {
 		return userService.activeUser(id);
 	}
 

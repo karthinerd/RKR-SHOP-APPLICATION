@@ -13,14 +13,16 @@ import UserList from "./Components/UserList";
 import UserProduct from "./Components/User-Product";
 import OrderPlace from "./Order/PlaceOrder";
 import OrderHistory from "./Order/OrderHistory";
-import { Example } from "./Product/ProductCard";
 import Sidebar from "./Layout/Sidebar";
 import Navbar from "./Layout/Navbar";
-import Footer from "./Layout/Footer";
-
+import ActivityLog from "./Components/ActivityLog";
+import ActivateHistory from "./Components/ActivateHistory";
+import FileUpload from "./FileUpload/fileUpload";
+import React from 'react'
+import AllOrderHistory from "./Order/AllOrderHistory";
 
 function App() {
-  
+
   return (
 
     <div className="App">     
@@ -42,10 +44,12 @@ function App() {
           <Route path="/userProduct" element={<UserProduct/>} />
           <Route path="/placeOrder" element={<OrderPlace/>} />
           <Route path="/orderHistory" element={<OrderHistory/>} />
-          <Route path="/card" element={<Example/>} />
+          <Route path="/allOrderHistory" element={<AllOrderHistory/>} />
+          <Route path="/activityLog" element={<ActivityLog/>} />
+          <Route exact path="/activateHistory/:id" element={<ActivateHistory />} />
+          <Route path="/upload" element={<FileUpload/>} />
         </Routes>
       </div>
-
       {/* <Footer/> */}
     </div>
   );

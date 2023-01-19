@@ -1,6 +1,6 @@
 package com.rkr.shop.models;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -48,27 +48,28 @@ public class User {
 	private String password;
 
 	private int points;
+	
+	private int deductedPoints;
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
 
-	// @Size(min=10 , max = 15 , message = "Phone Number Should have at least 10
-	// numbers")
+	 @Size(min=7 , max = 11 , message = "Phone Number Should have at least 7 numbers")
 	private String phoneNumber;
 
 	private String isActive;
 
-	private LocalDateTime createdAt;
+	private LocalDate createdAt;
 
-	private LocalDateTime updatedAt;
+	private LocalDate updatedAt;
 
-	private LocalDateTime activatedAt;
+	private LocalDate activatedAt;
 	
 	@PrePersist
 	public void onSave() {
 
-		LocalDateTime now = LocalDateTime.now();
+		LocalDate now = LocalDate.now();
 
 		this.createdAt = now;
 

@@ -47,3 +47,13 @@ footer{
   bottom:0; 
   width: 100% !important; 
 }
+
+/* #customFile{
+  outline: none;
+  box-shadow: none;
+} */
+
+
+#select{
+  width: 1000%;
+}

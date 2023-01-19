@@ -53,7 +53,6 @@ const CreateProduct = () => {
   const [productDescription, setProductDescription] = useState("");
   const [availableQuantity, setAvailableQuantity] = useState("");
   const [price, setPrice] = useState("");
-  const [productImage, setProductImage] = useState("");
   const [successful, setSuccessful] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -76,12 +75,7 @@ const CreateProduct = () => {
     const price = e.target.value;
     setPrice(price);
   };
-
-  const onChangeFile = (e) => {
-    const productImage = e.target.value;
-    setProductImage(productImage);
-  };
-
+  
   const handleCreate = (e) => {
     e.preventDefault();
 
@@ -91,15 +85,12 @@ const CreateProduct = () => {
     form.current.validateAll();
 
     if (checkBtn.current.context._errors.length === 0) {
+
       AuthService.createProduct(
-        productName,
-        productDescription,
-        availableQuantity,
-        productImage,
-        price
+        productName,availableQuantity,price,productDescription
       ).then(
         (response) => {
-          setMessage("Product Added Successfully");
+          setMessage(response.data.dataObject);
           setSuccessful(true);
         },
         (error) => {
@@ -119,7 +110,7 @@ const CreateProduct = () => {
   return (
     <div className="col-md-12">
       <div className="card card-container">
-        <Form onSubmit={handleCreate} ref={form}>
+        <Form onSubmit={handleCreate} ref={form} enctype="multipart/form-data">
           {!successful && (
             <div>
               <div className="form-group">
@@ -163,18 +154,6 @@ const CreateProduct = () => {
                   validations={[required, vavailableQuantity]}
                 />
               </div>
-
-              <label class="form-label" for="customFile">
-                Product Image
-              </label>
-              <input
-                type="file"
-                class="form-control"
-                id="customFile"
-                name="productImage"
-                value={productImage}
-                onChange={onChangeFile}
-              />
 
               <div className="form-group">
                 <label htmlFor="password">Product Price</label>

@@ -35,5 +35,6 @@ public class Product {
 	private int availableQuantity;
 
 	private int price;
+	
 
 }

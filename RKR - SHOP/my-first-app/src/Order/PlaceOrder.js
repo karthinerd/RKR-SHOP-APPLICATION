@@ -101,7 +101,7 @@ const OrderPlace = () => {
           const resMessage =
             (error.response &&
               error.response.data &&
-              error.response.data.errorObject.errorMessage) ||
+              error.response.data.dataObject) ||
             error.errorMessage ||
             error.toString();
 

@@ -55,8 +55,8 @@ const Login = () => {
           const resMessage =
             (error.response &&
               error.response.data &&
-              error.response.data.message) ||
-            error.message ||
+              error.response.data.errorObject.errorMessage) ||
+              error.message ||
             error.toString();
 
           setLoading(false);

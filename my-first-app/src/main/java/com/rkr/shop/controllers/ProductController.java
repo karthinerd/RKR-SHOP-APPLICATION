@@ -1,6 +1,7 @@
 package com.rkr.shop.controllers;
 
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.rkr.shop.ResponseStructure.ResponseStructureDto;
 import com.rkr.shop.models.Product;
 import com.rkr.shop.security.services.ProductService;
@@ -27,7 +29,7 @@ public class ProductController {
 
 	@PostMapping("/addProduct")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ResponseStructureDto> createProduct(@Valid @RequestBody Product entity) {
+	public ResponseEntity<ResponseStructureDto> createProduct(@RequestBody @Valid Product entity) {
 
 		return productService.createProduct(entity);
 

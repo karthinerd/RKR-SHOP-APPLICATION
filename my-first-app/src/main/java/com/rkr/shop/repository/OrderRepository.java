@@ -11,7 +11,6 @@ import com.rkr.shop.models.Order;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-//	@Query("from myorder where user_id=:userId")
 	List<Order> findByUserId(@Param("userId") Long userId);
 	
 }

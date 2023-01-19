@@ -3,7 +3,7 @@ import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import { isEmail } from "validator";
-
+import { Link } from "react-router-dom";
 import AuthService from "../Services/auth.service";
 
 const required = (value) => {
@@ -56,15 +56,6 @@ const vphoneNumber = (value) => {
   }
 };
 
-const vpoints = (value) => {
-  if (value.length <= 0) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        The points must be more than 0 .
-      </div>
-    );
-  }
-};
 
 const Register = () => {
   const form = useRef();
@@ -74,7 +65,6 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [points, setPoints] = useState("");
   const [role, setRole] = useState([]);
   const [successful, setSuccessful] = useState(false);
   const [message, setMessage] = useState("");
@@ -99,10 +89,6 @@ const Register = () => {
     setPhoneNumber(phoneNumber);
   };
 
-  const onChangePoints = (e) => {
-    const points = e.target.value;
-    setPoints(points);
-  };
 
   const onChangeRole = (e) => {
     let role = e.target.value;
@@ -118,7 +104,7 @@ const Register = () => {
     form.current.validateAll();
 
     if (checkBtn.current.context._errors.length === 0) {
-      AuthService.register(username, email, password,phoneNumber,points,role).then(
+      AuthService.register(username, email, password,phoneNumber,role).then(
         (response) => {
           setMessage(response.data.dataObject);
           setSuccessful(true);
@@ -183,6 +169,8 @@ const Register = () => {
                   onChange={onChangePassword}
                   validations={[required, vpassword]}
                 />
+                  <i class="bi bi-eye-slash" 
+                    id="togglePassword"></i>
               </div>
 
               <div className="form-group">
@@ -197,21 +185,10 @@ const Register = () => {
                 />
               </div>
 
-              <div className="form-group">
-                <label htmlFor="password">Points</label>
-                <Input
-                  type="number"
-                  className="form-control"
-                  name="points"
-                  value={points}
-                  onChange={onChangePoints}
-                  validations={[required, vpoints]}
-                />
-              </div>
-
-              <div className="mb-3">
-              <label htmlFor="Role" className="form-label" />
+              <div className="form-group" id="select">
+              <label htmlFor="Role" className="form-label">
               Select A Role
+              </label>
               <select
                 className="form-select"
                 aria-label="Default select example"
@@ -219,6 +196,7 @@ const Register = () => {
                 value={role}
                 onChange={onChangeRole}
                 validations={[required]}
+                style={{width: "270px"}}
               >
                 <option hidden placeholder="Select Role"></option>
                 <option name="role" value="admin">
@@ -249,6 +227,9 @@ const Register = () => {
               >
                 {message}
               </div>
+              <Link className="btn btn-outline-info" to="/login">
+               Go to Login
+              </Link>
             </div>
           )}
           <CheckButton style={{ display: "none" }} ref={checkBtn} />

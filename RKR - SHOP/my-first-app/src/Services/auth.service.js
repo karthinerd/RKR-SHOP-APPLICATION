@@ -1,43 +1,40 @@
 import axios from "axios";
 import authHeader from "../Services/auth-header";
 
+
 const API_URL = "http://localhost:8001/api/auth/";
 
 const PRODUCT_URL = "http://localhost:8001/product/";
 
 const ORDER_URL = "http://localhost:8001/product/order/";
 
-const register = (username,email,password,phoneNumber,points,role) => {
+async function getAccessToken() {
+  return { Authorization: localStorage.getItem("Authorization")}
+}
+
+const register = (username,email,password,phoneNumber,role) => {
   return axios.post(API_URL + "signup", {
     username,
     email,
     password,
     phoneNumber,
-    points,
     role,
   });
 };
 
-const createProduct = (productName,productDescription,availableQuantity,productImage,price) => {
-return axios.post(PRODUCT_URL + "addProduct",{
-  productName,
-  productDescription,
-  availableQuantity,
-  productImage,
-  price
-},{ headers: authHeader() })
-}
+const createProduct = async(productName,availableQuantity,price,productDescription) => {
 
-const order = (productId,quantity,customerEmail,customerName) => {
+  return axios.post(PRODUCT_URL + "addProduct", {
+    productName,availableQuantity,price,productDescription
+  },{headers: 
+    await getAccessToken(), });
+};
+
+
+const order = (productId,userId) => {
    return axios.post(ORDER_URL + "placeOrder" ,{
-    "cartItems": [
-      {
-          productId,
-          quantity
-      }
-  ],
-    customerEmail,
-    customerName
+    productId,
+    userId,
    },{ headers: authHeader() })
 }
 

@@ -50,8 +50,13 @@ const Sidebar = () => {
         </Link>
       )}
       {showAdminBoard &&(
-        <a className="menu-item" href="/orderHistory">
+        <a className="menu-item" href="/allOrderHistory">
           Order History
+        </a>
+      )}
+      {showAdminBoard &&(
+        <a className="menu-item" href="/activityLog">
+          Activity Log
         </a>
       )}
       {showUserBoard && (

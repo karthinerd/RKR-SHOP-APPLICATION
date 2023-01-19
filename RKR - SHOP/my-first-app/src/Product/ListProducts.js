@@ -9,11 +9,32 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import _ from "lodash";
+
 
 export default function ListProducts() {
+  
   const [product, setProduct] = useState([]);
 
   const [open, setOpen] = React.useState(false);
+
+  const pageSize = 10 ;
+
+  const [paginatedPosts,setPaginatedPosts] = useState([]);
+
+  const [currentPage , setCurrentPage] = useState(1);
+
+  const pageCount = product? Math.ceil(product.length/pageSize):0;
+
+  const pages = _.range(1,pageCount+1);
+
+  const pagination = (pageno)=>{
+    setCurrentPage(pageno);
+    const startIntex = (pageno - 1) * pageSize;
+    const paginatedPost = _(product).slice(startIntex).take(pageSize).value();
+    setPaginatedPosts(paginatedPost);
+  }
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -30,13 +51,17 @@ export default function ListProducts() {
   const loadProducts = async () => {
     const result = await axios.get("http://localhost:8001/product/getProduct",{ headers: authHeader() });
     setProduct(result.data.dataObject);
+    setPaginatedPosts(_(result.data.dataObject).slice(0).take(pageSize).value());
   };
 
   const deleteUser = async (id) => {
       await axios.delete(`http://localhost:8001/product/deleteProduct/${id}`,{ headers: authHeader() });
     loadProducts();
+    setTimeout(window.location.reload(true), 10000);
     handleClose();
   };
+
+
 
   return (
     <div className="container">
@@ -52,7 +77,7 @@ export default function ListProducts() {
         <table className="table border shadow">
           <thead>
             <tr>
-              <th scope="col">S.N</th>
+              <th scope="col">Product Id</th>
               <th scope="col">Product Name</th>
               <th scope="col">Price</th>
               <th scope="col">Available Quantity</th>
@@ -61,10 +86,11 @@ export default function ListProducts() {
             </tr>
           </thead>
           <tbody>
-            {product.map((user, index) => (
+            {paginatedPosts.map((user, index) => (
               <tr>
                 <th scope="row" key={index}>
-                  {index + 1}
+                  {/* {index + 1} */}
+                    {user.id}
                 </th>
                 <td>{user.productName}</td>
                 <td>{user.price}</td>
@@ -77,6 +103,12 @@ export default function ListProducts() {
                   >
                     Edit
                   </Link>
+                  <Link
+                    className="btn btn-outline-secondary mx-2"
+                    to={"/upload"}
+                  >
+                    Upload Image
+                  </Link>
                   <Dialog
                     open={open}
                     onClose={handleClose}
@@ -88,7 +120,6 @@ export default function ListProducts() {
                     </DialogTitle>
                     <DialogContent>
                       <DialogContentText id="alert-dialog-description">
-
                       </DialogContentText>
                     </DialogContent>
                     <DialogActions>
@@ -110,6 +141,21 @@ export default function ListProducts() {
             ))}
           </tbody>
         </table>
+        <nav>
+          <ul className="pagination">
+            {
+              pages.map((page)=>(
+                <li className={
+                  page === currentPage ? "page-item active" : "page-item"
+                }>
+                  <p className="page-link"
+                  onClick={()=>pagination(page)}
+                  >{page}</p>
+                  </li>
+              ))
+            }
+          </ul>
+        </nav>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState , useEffect} from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import authHeader from "../Services/auth-header";
+import AuthService from "../Services/auth.service";
 
 export default function EditUser() {
   let navigate = useNavigate();
@@ -10,19 +11,34 @@ export default function EditUser() {
 
   const [user, setUser] = useState({
     username: "",
-    password: "",
     email: "",
     phoneNumber: "",
     points:""
   });
 
+  const [showAdminBoard, setShowAdminBoard] = useState(false);
+
+  useEffect(() => {
+    const user = AuthService.getCurrentUser();
+
+    if (user) {
+      setShowAdminBoard(user.dataObject.roles.includes("ROLE_ADMIN"));
+    }
+  }, []);
+
   const {
     username,
-    password,
     email,
     phoneNumber,
     points
   } = user;
+
+  let resData = {
+   "username" : username,
+   "email" : email,
+   "phoneNumber": phoneNumber,
+   "points" :points
+  }
 
   const [formErrors, setFormErrors] = useState({});
 
@@ -35,11 +51,13 @@ export default function EditUser() {
   }, []);
 
   const onSubmit = async (e) => {
+    
     e.preventDefault();
     setFormErrors(validate(user));
 
-    await axios.put(`http://localhost:8001/api/auth/update/${id}`, user,{ headers: authHeader() });
-    navigate("/profile");
+    await axios.put(`http://localhost:8001/api/auth/update/${id}`, resData,{ headers: authHeader() });
+    navigate("/login");
+    setTimeout(window.location.reload(true), 10000);
   };
 
   const loadUser = async () => {
@@ -60,13 +78,6 @@ export default function EditUser() {
     } else if (!regex.test(values.email)) {
       errors.email = "This is not a valid email format";
     }
-    if (!values.password) {
-      errors.password = "Password is required";
-    } else if (values.password.length < 8) {
-      errors.password = "Password must be more than 8 characters";
-    } else if (values.password.length > 10) {
-      errors.passWord = "Password cannot exceed more than 10 characters";
-    }
     if (!values.phoneNumber) {
       errors.phoneNumber = "Phone Number is Mandatory";
     }else if (values.phoneNumber.length < 10) {
@@ -86,7 +97,7 @@ export default function EditUser() {
     <div className="container">
       <div className="row">
         <div className="col-md-6 offset-md-3 border rounded p-4 mt-2 shadow">
-          <h2 className="text-center m-4">Registration</h2>
+          <h2 className="text-center m-4">Edit Details</h2>
           <form id="signUpForm" onSubmit={(e) => onSubmit(e)} autoComplete="off">
             <div className="mb-3">
               <label htmlFor="UserName" className="form-label">
@@ -117,23 +128,7 @@ export default function EditUser() {
               />
             </div>
             <p>{formErrors.email}</p>
-
-            {/* <div className="mb-3">
-              <label htmlFor="Password" className="form-label">
-                Password
-              </label>
-              <input
-                type={"password"}
-                className="form-control"
-                placeholder="Enter your Password"
-                name="password"
-                value={password}
-                onChange={(e) => onInputChange(e)}
-              />
-            </div>
-            <p>{formErrors.password}</p> */}
             
-
             <div className="mb-3">
               <label htmlFor="PhoneNumber" className="form-label">
                 PhoneNumber
@@ -149,6 +144,8 @@ export default function EditUser() {
             </div>
             <p>{formErrors.phoneNumber}</p>
 
+            {showAdminBoard && (
+              <div>
             <div className="mb-3">
               <label htmlFor="points" className="form-label">
                 Points
@@ -163,7 +160,8 @@ export default function EditUser() {
               />
             </div>
             <p>{formErrors.points}</p>
-
+            </div>
+            )}
             <button type="submit" id="loginBtn"
              className="btn btn-outline-primary" 
              >

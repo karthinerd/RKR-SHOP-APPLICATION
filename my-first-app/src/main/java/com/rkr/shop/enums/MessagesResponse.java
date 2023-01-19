@@ -14,6 +14,7 @@ public enum MessagesResponse {
 	NO_ORDER_DETAILS("No Order Details"),
 	USER_ALREADY_ACTIVATED("User Already Activated "),
 	INACTIVE_USER("User is InActive"),
+	NO_ACTIVE_LOG("No Activity Log"),
 	
 	USER_ACTIVATED("User Activated Succssfully"),
 	ORDER_PLACED("Your Order Placed Successfully"),

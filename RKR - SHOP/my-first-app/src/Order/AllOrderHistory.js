@@ -4,35 +4,35 @@ import axios from "axios";
 import authHeader from "../Services/auth-header";
 import _ from "lodash";
 
-const OrderHistory = () => {
+const AllOrderHistory = () => {
 
-const [order,setOrder] = useState([]);
+  const [order,setOrder] = useState([]);
+
+  const pageSize = 10 ;
+
+  const [paginatedPosts,setPaginatedPosts] = useState([]);
+
+  const [currentPage , setCurrentPage] = useState(1);
+
+  const pageCount = order? Math.ceil(order.length/pageSize):0;
+
+  const pages = _.range(1,pageCount+1);
+
+  const pagination = (pageno)=>{
+    setCurrentPage(pageno);
+    const startIntex = (pageno - 1) * pageSize;
+    const paginatedPost = _(order).slice(startIntex).take(pageSize).value();
+    setPaginatedPosts(paginatedPost);
+  }
 
  const currentUser = AuthService.getCurrentUser();
-
- const pageSize = 10 ;
-
- const [paginatedPosts,setPaginatedPosts] = useState([]);
-
- const [currentPage , setCurrentPage] = useState(1);
-
- const pageCount = order? Math.ceil(order.length/pageSize):0;
-
- const pages = _.range(1,pageCount+1);
-
- const pagination = (pageno)=>{
-   setCurrentPage(pageno);
-   const startIntex = (pageno - 1) * pageSize;
-   const paginatedPost = _(order).slice(startIntex).take(pageSize).value();
-   setPaginatedPosts(paginatedPost);
- }
 
  useEffect(() => {
   loadUser();
 }, []);
 
  const loadUser = async () => {
-  const result = await axios.get(`http://localhost:8001/product/order/orderHistory/${currentUser.dataObject.id}`,{ headers: authHeader() });
+  const result = await axios.get(`http://localhost:8001/product/order/orderHistory`,{ headers: authHeader() });
   setOrder(result.data.dataObject);
   setPaginatedPosts(_(result.data.dataObject).slice(0).take(pageSize).value());
 };
@@ -72,8 +72,8 @@ const [order,setOrder] = useState([]);
               </tr>
               ))}
           </tbody>
-          </table>
-          <nav>
+        </table>
+        <nav>
           <ul className="pagination">
             {
               pages.map((page)=>(
@@ -92,4 +92,4 @@ const [order,setOrder] = useState([]);
   );
 };
 
-export default OrderHistory;
+export default AllOrderHistory;
