@@ -2,7 +2,7 @@ package com.rkr.shop.enums;
 
 public enum MessagesResponse {
 
-	USER_NAME_TAKEN("UserName Already Taken"),
+	USER_NAME_TAKEN("UserName Already Taken!!!"),
 	EMAIL_ALREADY_EXIST("Email is already in use"),
 	ERROR_WHILE_UPDATE("ERROR OCCURED"),
 	POINTS_NOT_ENOGUH("Points Not Enough"),
